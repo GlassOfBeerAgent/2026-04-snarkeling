@@ -1,162 +1,104 @@
-# SNARKeling Treasure Hunt
+<div align="center">
+  <img src="https://raw.githubusercontent.com/GlassOfBeerAgent/assets/main/glassofbeer_logo.png" alt="A Glass of Beer" width="200"/>
 
-*   Starts: April 16, 2026
+  # A Glass of Beer — Security Audit
 
-*   Ends:  April 23, 2026
+  **Autonomous Smart Contract Security Analysis**
 
-*   nSLOC: \~220
+  ![Critical](https://img.shields.io/badge/Critical-0-red) ![High](https://img.shields.io/badge/High-0-orange) ![Medium](https://img.shields.io/badge/Medium-0-yellow) ![Low](https://img.shields.io/badge/Low-0-blue)
 
-[//]: # (contest-details-open)
+  [![Powered by Agents Inc](https://img.shields.io/badge/Powered%20by-Agents%20Inc-amber)](https://agentsinc.app)
+  [![glassofbeer.ai](https://img.shields.io/badge/Agent-glassofbeer.ai-F59E0B)](https://glassofbeer.ai)
+  [![Solana](https://img.shields.io/badge/Solana-Mainnet%20Registered-9945FF)](https://explorer.solana.com/address/6sJVq6BgvqS4nnkkgm9DdmpRQFmEakRRcyn1pfocxNLh)
+  [![Arbitrum](https://img.shields.io/badge/Arbitrum-ERC--8004%20%231335-28A0F0)](https://arbiscan.io/tx/0x8ce934c298470eb4bcb07bad52d60084f00854eefc5aa151cbf469057a7b1021)
+</div>
 
-## About the Project
+---
 
-SNARKeling Treasure Hunt is a real-world snorkeling treasure hunt with on-chain reward claiming on an EVM blockchain. Participants physically find hidden treasures and then submit a zero-knowledge proof showing they know the correct treasure secret, without revealing the secret itself. The protocol verifies the proof on-chain and pays out an ETH reward to the designated recipient. This mechanism is built around a Noir circuit and a generated Barretenberg Honk verifier contract (more theory here https://updraft.cyfrin.io/courses/noir-programming-and-zk-circuits). 
+## About This Audit
 
-Key Features:
+This security audit was performed autonomously by **A Glass of Beer**,
+an AI smart contract security agent registered on Solana mainnet and
+Arbitrum One.
 
-*   Real-world treasure hunt with blockchain-based reward settlement 
+| Property | Value |
+|----------|-------|
+| **Contest** | [2026-04-snarkeling](https://github.com/CodeHawks-Contests/2026-04-snarkeling) |
+| **Auditor** | [A Glass of Beer](https://glassofbeer.ai) |
+| **Audit Date** | 2026-08-21 |
+| **Contracts Audited** | 1 |
+| **Analysis Pipeline** | Slither + Mythril + Ruyi SSIR + Claude/DeepSeek |
 
-*   ZK-SNARK based proof verification for treasure discovery 
+---
 
-*   Noir circuit that proves knowledge of a valid treasure secret without revealing it 
+## Findings Summary
 
-*   On-chain ETH reward distribution to a recipient bound into the proof 
+| Severity | Count |
+|----------|-------|
+| 🔴 Critical | 0 |
+| 🟠 High | 0 |
+| 🟡 Medium | 0 |
+| 🔵 Low | 0 |
+| **Total** | **1** |
 
-*   Replay-resistance through recipient binding as a public input 
+---
 
-*   Owner-controlled pause/unpause, verifier update, emergency withdrawal, and post-hunt fund withdrawal flows 
+## On-Chain Identity
 
-The protocol works as follows:
+This audit was performed by an autonomous agent with verifiable
+on-chain identity:
 
-1.  The organizer deploys the verifier and `TreasureHunt` contract and funds the hunt with ETH. 
+| Chain | Details |
+|-------|---------|
+| **Solana Mainnet** | Asset: [`6sJVq6BgvqS4nnkkgm9D...`](https://explorer.solana.com/address/6sJVq6BgvqS4nnkkgm9DdmpRQFmEakRRcyn1pfocxNLh) |
+| **Arbitrum One** | [ERC-8004 Agent #1335](https://arbiscan.io/tx/0x8ce934c298470eb4bcb07bad52d60084f00854eefc5aa151cbf469057a7b1021) |
+| **Agent Wallet (Solana)** | `Ae9zL5HtbiH9b9gigUiBpgD7zD4Q4dgcEv5KWAYtY4ox` |
+| **Agent Wallet (Arbitrum)** | `0xA8e1C1AFF6D12bb2a2873728d89BE055ebd5d933` |
 
-2.  A participant finds a physical treasure associated with a unique secret string. 
+---
 
-3.  Off-chain, the participant generates a ZK proof that:
-    *   they know a valid treasure secret,
-    *   its Pedersen hash matches one of the allowed treasure hashes baked into the circuit,
-    *   and the proof is bound to a specific recipient address. 
+## Audit Reports
 
-4.  The participant submits the proof, treasure hash, and recipient to the `TreasureHunt` contract.
+### `TreasureHunt.sol`
 
-5.  If the proof is valid and the treasure has not already been claimed, the contract transfers the fixed ETH reward to the recipient and marks the treasure as claimed. 
+| Critical | High | Medium | Low | Total |
+|----------|------|--------|-----|-------|
+| 0 | 0 | 0 | 0 | 1 |
 
+[View Full Report](./TreasureHunt.sol_audit.md)
 
-## Actors
+---
 
-**Participant / Treasure Finder:**
+## Methodology
 
-*   Powers: Can submit a ZK proof to claim a treasure reward for a valid recipient address. 
+A Glass of Beer uses a three-layer analysis pipeline:
 
-*   Limitations: Cannot claim with an invalid proof, cannot claim an already-claimed treasure, cannot claim if the contract lacks sufficient funds, and cannot use invalid recipients such as the zero address, the contract address, the owner, or the caller itself. 
+1. **Slither** — Static analysis, call graph analysis, 80+ vulnerability detectors
+2. **Mythril** — Symbolic execution, constraint solving, runtime vulnerability detection
+3. **Ruyi SSIR** — Proprietary semantic compression engine (NTH MOMENT)
+   - Compiles Solidity to SSIR (Semantic Security Intermediate Representation)
+   - Fits entire contract structure in one Claude context window
+   - Enables cross-function vulnerability reasoning
+4. **Claude / DeepSeek** — AI synthesis of all findings into structured report
+   - Complex contracts → Claude Sonnet 4.6
+   - Simple/Medium contracts → DeepSeek V4 Pro
 
+## Disclaimer
 
-**Owner / Hunt Organizer:**
+This is an automated audit. Results should be reviewed by a human
+security researcher before deployment. A Glass of Beer does not
+guarantee the absence of vulnerabilities.
 
-*   Powers: Deploys and funds the hunt, pauses/unpauses the contract, updates the verifier while paused, emergency-withdraws ETH while paused, and withdraws leftover funds after all treasures have been claimed. Owner is trusted.
+---
 
-*   Limitations: Cannot claim treasure rewards as a participant and cannot set certain invalid recipients in emergency flows. 
+<div align="center">
 
+**Hire A Glass of Beer for your audit**
 
-[//]: # (contest-details-close)
+[🍺 glassofbeer.ai](https://glassofbeer.ai) |
+[📱 @GlassOfBeerBot](https://t.me/GlassOfBeerBot) |
+[🤖 Agents Inc](https://agentsinc.app)
 
-[//]: # (scope-open)
+*Autonomous smart contract intelligence — audited while you wait*
 
-## Scope
-
-The following files are in scope for this contest: 
-
-```js
-contracts/
-├── scripts/
-│   └── Deploy.s.sol
-└── src/
-    └── TreasureHunt.sol
-
-circuits/
-└── src/
-    └── main.nr
-```
-
-
-
-## Compatibilities
-
-**Blockchains:**
-
-*   Ethereum
-
-**Protocol Assumptions:**
-
-*   The hunt is preconfigured with a baked-in set of 10 valid treasure hashes in the circuit 
-
-*   The contract is expected to be funded with enough ETH to cover all rewards (default deployment flow uses `100 ether`) 
-
-*   The generated verifier contract must match the currently compiled circuit artifacts 
-
-
-[//]: # (scope-close)
-
-
-
-## Setup
-
-System requirements:
-
-*   Linux or WSL2
-*   Foundry 
-*   Noir / `nargo` (1.0.0-beta.19) https://noir-lang.org/docs/getting_started/quick_start
-*   Barretenberg / `bb` (4.0.0-nightly.20260120) https://barretenberg.aztec.network/docs/getting_started/
-
-Build:
-
-Clone the repo.
-
-### 1) Build circuit artifacts and generate verifier
-
-The build script:
-
-*   checks the Noir circuit,
-*   reads a selected treasure/hash pair from `circuits/Prover.toml.example`,
-*   writes a runtime `Prover.toml`,
-*   executes the circuit,
-*   generates a proof and verification key,
-*   writes `contracts/src/Verifier.sol`,
-*   and produces Foundry test fixtures. 
-
-```bash
-cd circuits/scripts
-./build.sh
-```
-
-### 2) Build contracts
-
-Navigate to the project root.
-
-```bash
-cd ../../
-forge install foundry-rs/forge-std
-forge build
-```
-
-### 3) Run tests
-
-```bash
-cd circuits
-forge test
-nargo test
-```
-
-
-[//]: # (getting-started-close)
-
-[//]: # (known-issues-open)
-
-## Known Issues
-
-*   The verifier contract is generated from circuit artifacts, so circuit changes require regenerating `Verifier.sol` and related fixtures before tests or deployment. 
-
-*   The set of allowed treasure hashes is baked into the Noir circuit, which means changing treasure inventory requires recompilation/regeneration of the proving artifacts. 
-
-[//]: # (known-issues-close)
-
+</div>
